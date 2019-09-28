@@ -1,0 +1,24 @@
+version: '2'
+services:
+
+  piggybank-api:
+    container_name: piggybank-api
+    image: piggybank-api
+    build:
+      context: .
+    volumes:
+      - ./build/libs/:/piggybank-api
+    command: java -jar piggybank-api-1.0-SNAPSHOT-all.jar
+    ports:
+      - "8080:8080"
+    depends_on:
+      - piggybank-api-mysql
+
+  piggybank-api-mysql:
+    container_name: piggybank-api-mysql
+    image: mysql:5.7.21
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "piggybank-api"
