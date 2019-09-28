@@ -1,6 +1,8 @@
 package com.github.carlosmenezes
 
 import com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT
+import com.github.carlosmenezes.config.DatabaseConfig
+import com.github.carlosmenezes.routes.savings
 import com.github.carlosmenezes.routes.users
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -22,11 +24,15 @@ fun Application.main() {
             enable(INDENT_OUTPUT)
         }
     }
+
+    DatabaseConfig.init()
+
     install(Routing) {
         get("/") {
             call.respondText("Hello!", ContentType.Text.Html)
         }
         users()
+        savings()
     }
 }
 
