@@ -1,5 +1,4 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.api.JavaVersion.VERSION_1_8
 
 val ktorVersion by extra("1.2.5")
 val arrowVersion by extra("0.10.0")
@@ -7,10 +6,9 @@ val logbackVersion by extra("1.2.3")
 val exposedVersion by extra("0.17.4")
 
 plugins {
-    kotlin("jvm") version "1.3.41"
-    kotlin("kapt") version "1.3.41"
+    kotlin("jvm") version "1.3.60"
+    kotlin("kapt") version "1.3.60"
     application
-    id("io.ebean") version "11.44.1"
     id("com.github.johnrengelman.shadow") version "4.0.4"
 }
 
@@ -37,22 +35,27 @@ dependencies {
     runtime("mysql:mysql-connector-java:5.1.48")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 val mainClass = "io.ktor.server.netty.EngineMain"
 application {
-    mainClassName = "io.ktor.server.netty.EngineMain"
-}
-
-tasks.withType<ShadowJar> {
-    manifest {
-        attributes(mapOf("Main-Class" to mainClass))
-    }
+    mainClassName = mainClass
 }
 
 tasks {
+
+    compileKotlin {
+        targetCompatibility = VERSION_1_8.name
+    }
+
+    compileTestKotlin {
+        targetCompatibility = VERSION_1_8.name
+    }
+
+    shadowJar {
+        manifest {
+            attributes(mapOf("Main-Class" to mainClass))
+        }
+    }
+
     build {
         dependsOn(shadowJar)
     }

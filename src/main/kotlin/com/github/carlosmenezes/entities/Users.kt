@@ -22,8 +22,23 @@ object Users {
         logger.error("An error occurred creating the user.", t)
         return Either.left(UserAlreadyExistsError())
     }
+
+    suspend fun find(login: String?): Either<UserError, UserDTO> {
+        return UserRepository.findByLogin(login ?: "")
+            .fold(::handleFindError, ::handleFindSuccess)
+    }
+    private fun handleFindSuccess(user: UserDTO): Either<Nothing, UserDTO> {
+        logger.info("User found: $user")
+        return Either.right(user)
+    }
+
+    private fun handleFindError(t: Throwable): Either<UserError, Nothing> {
+        logger.error("An error occurred finding the user.", t)
+        return Either.left(UserNotFoundError())
+    }
 }
 
 sealed class UserError(val message: String)
 class UserCreationError : UserError("Error while creating user")
 class UserAlreadyExistsError : UserError("User already exists")
+class UserNotFoundError : UserError("User not found")

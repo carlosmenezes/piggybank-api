@@ -13,6 +13,14 @@ object UserRepository {
         User.findById(id)?.toDTO()
     }
 
+    suspend fun findByLogin(login: String): Either<Throwable, UserDTO> {
+        return Either.catch {
+            dbQuery {
+                User.find { Users.login eq login }.single().toDTO()
+            }
+        }
+    }
+
     suspend fun save(user: UserDTO): Either<Throwable, UserDTO> {
         return Either.catch {
             val userId = dbQuery {

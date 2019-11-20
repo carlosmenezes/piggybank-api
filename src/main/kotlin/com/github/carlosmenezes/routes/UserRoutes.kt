@@ -6,9 +6,12 @@ import com.github.carlosmenezes.entities.dto.UserDTO
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.NotFound
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
+import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
 import org.slf4j.LoggerFactory
@@ -25,6 +28,13 @@ fun Route.users() {
             when (val userCreated = Users.create(user)) {
                 is Either.Right -> call.respond(Created, userCreated.b)
                 is Either.Left -> call.respond(BadRequest, userCreated.a)
+            }
+        }
+
+        get("/{login}") {
+            when (val user = Users.find(call.parameters["login"])) {
+                is Either.Right -> call.respond(OK, user.b)
+                is Either.Left -> call.respond(NotFound)
             }
         }
     }
