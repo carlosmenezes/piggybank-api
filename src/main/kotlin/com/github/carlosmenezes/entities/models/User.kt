@@ -17,8 +17,7 @@ class User(id: EntityID<Long>): LongEntity(id) {
 
     var login by Users.login
     var name by Users.name
-    var uuid by Users.uuid
-        private set
+    val uuid by Users.uuid
     val savings by Saving referrersOn Savings.user
 
     fun toDTO() = UserDTO(uuid, login, name)
