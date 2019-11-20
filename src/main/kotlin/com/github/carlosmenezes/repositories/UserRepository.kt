@@ -6,6 +6,7 @@ import com.github.carlosmenezes.entities.dto.UserDTO
 import com.github.carlosmenezes.entities.models.User
 import com.github.carlosmenezes.entities.models.Users
 import org.jetbrains.exposed.sql.insertAndGetId
+import java.util.*
 
 object UserRepository {
 
@@ -27,6 +28,7 @@ object UserRepository {
                 Users.insertAndGetId {
                     it[login] = user.login
                     it[name] = user.name
+                    it[uuid] = UUID.randomUUID()
                 }
             }
             findById(userId.value)!!

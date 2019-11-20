@@ -9,6 +9,7 @@ import org.jetbrains.exposed.dao.LongIdTable
 object Users : LongIdTable("users") {
     val login = varchar("login", 255).uniqueIndex("unq_login")
     val name = varchar("name", 255)
+    val uuid = uuid("uuid")
 }
 
 class User(id: EntityID<Long>): LongEntity(id) {
@@ -16,7 +17,9 @@ class User(id: EntityID<Long>): LongEntity(id) {
 
     var login by Users.login
     var name by Users.name
+    var uuid by Users.uuid
+        private set
     val savings by Saving referrersOn Savings.user
 
-    fun toDTO() = UserDTO(login, name)
+    fun toDTO() = UserDTO(uuid, login, name)
 }
